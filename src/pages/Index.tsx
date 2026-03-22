@@ -24,19 +24,81 @@ function useInView(threshold = 0.2) {
   return { ref, inView };
 }
 
-function AnimatedBar({ height, color, delay = 0 }: { height: number; color: string; delay?: number }) {
-  const { ref, inView } = useInView(0.3);
+function IncomeBar({ year, val, h, colorIdx }: { year: string; val: string; h: number; colorIdx: number }) {
+  const { ref, inView } = useInView(0.2);
+  const colors = ["#c8cdd4", "#9aa0aa", "#6d7580", "#424850", "#111111"];
   return (
-    <div ref={ref} className="flex flex-col items-center gap-2">
-      <div className="h-48 w-10 bg-gray-100 rounded-sm relative overflow-hidden flex items-end">
+    <div className="flex flex-col items-center gap-2 flex-1">
+      <span className="text-xs font-semibold text-gray-700" style={{ opacity: inView ? 1 : 0, transition: `opacity 0.5s ${colorIdx * 150 + 800}ms` }}>
+        {val}
+      </span>
+      <div className="w-full bg-gray-200 rounded-sm relative overflow-hidden" style={{ height: "160px" }}>
         <div
-          className="w-full rounded-sm transition-all duration-1000 ease-out"
+          ref={ref}
+          className="absolute bottom-0 w-full rounded-sm"
           style={{
-            height: inView ? `${height}%` : "0%",
-            backgroundColor: color,
-            transitionDelay: `${delay}ms`,
+            height: inView ? `${h}%` : "0%",
+            backgroundColor: colors[colorIdx],
+            transition: `height 1s ease-out ${colorIdx * 150}ms`,
           }}
         />
+      </div>
+      <span className="text-xs text-gray-400">{year}</span>
+    </div>
+  );
+}
+
+function IncomeChartBars() {
+  const bars = [
+    { year: "2026", h: 15, val: "60" },
+    { year: "2028", h: 28, val: "110" },
+    { year: "2030", h: 45, val: "180" },
+    { year: "2033", h: 68, val: "270" },
+    { year: "2036", h: 100, val: "400+" },
+  ];
+  return (
+    <div className="flex items-end gap-3 h-48">
+      {bars.map((bar, i) => (
+        <IncomeBar key={bar.year} year={bar.year} val={bar.val} h={bar.h} colorIdx={i} />
+      ))}
+    </div>
+  );
+}
+
+function SkillBar({ skill, pct }: { skill: string; pct: number }) {
+  const { ref, inView } = useInView(0.2);
+  return (
+    <div>
+      <div className="flex justify-between mb-2">
+        <span className="text-sm font-medium text-gray-700">{skill}</span>
+        <span className="text-sm text-gray-400">{pct}%</span>
+      </div>
+      <div className="h-1 bg-gray-100 rounded-full overflow-hidden">
+        <div
+          ref={ref}
+          className="h-full bg-gray-900 rounded-full transition-all duration-1000 ease-out"
+          style={{ width: inView ? `${pct}%` : "0%" }}
+        />
+      </div>
+    </div>
+  );
+}
+
+function TimelinePoint({ label, idx }: { label: string; idx: number }) {
+  const { ref, inView } = useInView(0.2);
+  const lines = label.split("\n");
+  return (
+    <div
+      ref={ref}
+      className="absolute top-0 flex flex-col items-center"
+      style={{ left: `${idx * 25}%`, transform: "translateX(-50%)" }}
+    >
+      <div
+        className="w-3 h-3 rounded-full border-2 border-gray-900 -mt-1.5 transition-all duration-500"
+        style={{ background: inView && idx === 4 ? "#111" : "white", transitionDelay: `${idx * 200}ms` }}
+      />
+      <div className="mt-3 text-center transition-all duration-500" style={{ opacity: inView ? 1 : 0, transitionDelay: `${idx * 200 + 100}ms` }}>
+        {lines.map((line, i) => <p key={i} className="text-xs text-gray-500 leading-4">{line}</p>)}
       </div>
     </div>
   );
@@ -140,24 +202,29 @@ export default function Index() {
           <div className="relative">
             <SlideNumber n={1} />
             <div className="relative z-10">
-              <p className="text-xs tracking-[0.3em] uppercase text-gray-400 mb-6">Студент 1 курса · Факультет экономики</p>
-              <h1 className="font-cormorant text-6xl md:text-8xl font-light leading-tight mb-8">
-                Обо<br />
-                <em className="italic">мне</em>
+              <p className="text-xs tracking-[0.3em] uppercase text-gray-400 mb-6">Факультет экономики · Направление «Финансы и кредит» · 1 курс</p>
+              <h1 className="font-cormorant text-6xl md:text-8xl font-light leading-tight mb-4">
+                Горюнова<br />
+                <em className="italic">Мария</em>
               </h1>
+              <p className="font-cormorant text-2xl md:text-3xl font-light text-gray-500 italic mb-2">
+                Кем я вижу себя через 10 лет
+              </p>
+              <p className="text-sm text-gray-400 tracking-widest uppercase mb-2">Карьерная траектория в сфере финансов</p>
               <Divider />
               <div className="grid md:grid-cols-2 gap-10 mt-8">
                 <div>
                   <p className="text-gray-600 leading-relaxed text-lg">
-                    Я — студент первого курса направления <strong className="text-gray-900">«Финансы и кредит»</strong>. 
-                    Моя специализация формируется уже сейчас: я изучаю финансовые рынки, банковское дело и инвестиции.
+                    Я — студентка первого курса направления <strong className="text-gray-900">«Финансы и кредит»</strong>.
+                    Уже сейчас формирую профессиональный путь: изучаю финансовые рынки, банковское дело и инвестиции.
                   </p>
                   <p className="text-gray-600 leading-relaxed text-lg mt-4">
-                    Через 10 лет я вижу себя профессионалом финансовой сферы с чёткими карьерными достижениями и устойчивым финансовым положением.
+                    Через 10 лет я вижу себя востребованным специалистом финансовой сферы с чёткими карьерными достижениями и устойчивым профессиональным статусом.
                   </p>
                 </div>
                 <div className="flex flex-col gap-4">
                   {[
+                    { icon: "User", label: "Автор", val: "Горюнова Мария" },
                     { icon: "GraduationCap", label: "Направление", val: "Финансы и кредит" },
                     { icon: "Calendar", label: "Курс", val: "1 курс, 2026 год" },
                     { icon: "Target", label: "Горизонт", val: "10 лет — 2036 год" },
@@ -273,36 +340,7 @@ export default function Index() {
                 {/* BAR CHART */}
                 <div>
                   <p className="text-xs uppercase tracking-widest text-gray-400 mb-6">Рост дохода (тыс. руб./мес.)</p>
-                  <div className="flex items-end gap-3 h-48">
-                    {[
-                      { year: "2026", h: 15, val: "60" },
-                      { year: "2028", h: 28, val: "110" },
-                      { year: "2030", h: 45, val: "180" },
-                      { year: "2033", h: 68, val: "270" },
-                      { year: "2036", h: 100, val: "400+" },
-                    ].map((bar, i) => {
-                      const { ref, inView } = useInView(0.2);
-                      return (
-                        <div key={bar.year} className="flex flex-col items-center gap-2 flex-1">
-                          <span className="text-xs font-semibold text-gray-700" style={{ opacity: inView ? 1 : 0, transition: `opacity 0.5s ${i * 150 + 800}ms` }}>
-                            {bar.val}
-                          </span>
-                          <div className="w-full bg-gray-200 rounded-sm relative overflow-hidden" style={{ height: "160px" }}>
-                            <div
-                              ref={ref}
-                              className="absolute bottom-0 w-full rounded-sm"
-                              style={{
-                                height: inView ? `${bar.h}%` : "0%",
-                                background: i === 4 ? "#111" : `hsl(${220 - i * 15}, 10%, ${70 - i * 12}%)`,
-                                transition: `height 1s ease-out ${i * 150}ms`,
-                              }}
-                            />
-                          </div>
-                          <span className="text-xs text-gray-400">{bar.year}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
+                  <IncomeChartBars />
                 </div>
 
                 {/* STATS */}
@@ -351,24 +389,9 @@ export default function Index() {
                     { skill: "Управление рисками", pct: 85 },
                     { skill: "Корпоративные финансы", pct: 88 },
                     { skill: "Английский язык (деловой)", pct: 80 },
-                  ].map((s) => {
-                    const { ref, inView } = useInView(0.2);
-                    return (
-                      <div key={s.skill}>
-                        <div className="flex justify-between mb-2">
-                          <span className="text-sm font-medium text-gray-700">{s.skill}</span>
-                          <span className="text-sm text-gray-400">{s.pct}%</span>
-                        </div>
-                        <div className="h-1 bg-gray-100 rounded-full overflow-hidden">
-                          <div
-                            ref={ref}
-                            className="h-full bg-gray-900 rounded-full transition-all duration-1000 ease-out"
-                            style={{ width: inView ? `${s.pct}%` : "0%" }}
-                          />
-                        </div>
-                      </div>
-                    );
-                  })}
+                  ].map((s) => (
+                    <SkillBar key={s.skill} skill={s.skill} pct={s.pct} />
+                  ))}
                 </div>
 
                 {/* Certs */}
@@ -516,31 +539,9 @@ export default function Index() {
                 <p className="text-xs uppercase tracking-widest text-gray-400 mb-4">Путь от сейчас до цели</p>
                 <div className="relative">
                   <div className="h-px bg-gray-200 w-full" />
-                  {["2026\nСтарт", "2028\nСтажировка", "2030\nАналитик", "2033\nМенеджер", "2036\nCFO"].map((label, i) => {
-                    const { ref, inView } = useInView(0.2);
-                    return (
-                      <div
-                        key={label}
-                        ref={ref}
-                        className="absolute top-0 flex flex-col items-center"
-                        style={{ left: `${i * 25}%`, transform: "translateX(-50%)" }}
-                      >
-                        <div
-                          className="w-3 h-3 rounded-full border-2 border-gray-900 bg-white -mt-1.5 transition-all duration-500"
-                          style={{
-                            background: inView ? (i === 4 ? "#111" : "white") : "white",
-                            transitionDelay: `${i * 200}ms`,
-                          }}
-                        />
-                        <p
-                          className="text-xs text-gray-500 mt-3 text-center whitespace-pre-line leading-4 transition-all duration-500"
-                          style={{ opacity: inView ? 1 : 0, transitionDelay: `${i * 200 + 100}ms` }}
-                        >
-                          {label}
-                        </p>
-                      </div>
-                    );
-                  })}
+                  {["2026\nСтарт", "2028\nСтажировка", "2030\nАналитик", "2033\nМенеджер", "2036\nCFO"].map((label, i) => (
+                    <TimelinePoint key={label} label={label} idx={i} />
+                  ))}
                 </div>
               </div>
 
