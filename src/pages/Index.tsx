@@ -559,9 +559,9 @@ function Slide6({ active }: { active: boolean }) {
 
 // ─── main ────────────────────────────────────────────────────────────────────
 
-const slideComponents = [Slide0, Slide1, Slide2, Slide3, Slide4, Slide5, Slide6Sport, Slide6];
-const slideLabels = ["Титул", "Цель", "Карьера", "Доход", "Навыки", "Жизнь", "Спорт", "Итог"];
-const slideBg = ["white", "dark", "white", "light", "white", "dark", "dark", "white"];
+const slideComponents = [Slide0, Slide5, Slide1, Slide2, Slide3, Slide4, Slide6Sport, Slide6];
+const slideLabels = ["Титул", "Жизнь", "Цель", "Карьера", "Доход", "Навыки", "Спорт", "Итог"];
+const slideBg = ["white", "dark", "dark", "white", "light", "white", "dark", "white"];
 
 export default function Index() {
   const [current, setCurrent] = useState(0);
