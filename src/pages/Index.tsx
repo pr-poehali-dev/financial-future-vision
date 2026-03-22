@@ -64,7 +64,7 @@ function useSkills(active: boolean) {
 
 // ─── data ───────────────────────────────────────────────────────────────────
 
-const TOTAL = 7;
+const TOTAL = 8;
 
 const careerSteps = [
   { years: "2026–2028", role: "Стажёр / Аналитик", org: "Банк или инвест. компания", dot: "#d1d5db" },
@@ -418,6 +418,78 @@ function Slide5({ active }: { active: boolean }) {
   );
 }
 
+function Slide6Sport({ active }: { active: boolean }) {
+  const show = useAnimIn(active);
+  const stats = [
+    { value: "11", label: "лет лёгкой атлетики", icon: "Timer" },
+    { value: "30+", label: "медалей за соревнования", icon: "Medal" },
+    { value: "II", label: "взрослый разряд", icon: "Star" },
+  ];
+  const achievements = [
+    { title: "Победительница городских соревнований", icon: "Trophy", tag: "Лёгкая атлетика" },
+    { title: "Победительница областных соревнований", icon: "Trophy", tag: "Лёгкая атлетика" },
+    { title: "Волейбол", icon: "Activity", tag: "Командный спорт" },
+  ];
+  return (
+    <div className="w-full h-full flex items-center justify-center px-16 bg-gray-950">
+      <div className="max-w-5xl w-full">
+        <p className="text-xs tracking-[0.35em] uppercase text-gray-500 mb-5 transition-all duration-500"
+          style={{ opacity: show ? 1 : 0 }}>Личные достижения</p>
+        <h2 className="font-cormorant text-6xl font-light text-white leading-tight mb-3 transition-all duration-600"
+          style={{ opacity: show ? 1 : 0, transform: show ? "none" : "translateY(20px)", transitionDelay: "80ms" }}>
+          Спорт & <em className="italic text-gray-400">достижения</em>
+        </h2>
+        <div className="w-12 h-px bg-gray-700 mb-10 transition-all duration-500"
+          style={{ opacity: show ? 1 : 0, transitionDelay: "160ms" }} />
+
+        <div className="grid grid-cols-2 gap-12">
+          {/* left: big stats */}
+          <div className="flex flex-col gap-6">
+            {stats.map((s, i) => (
+              <div key={s.label}
+                className="flex items-center gap-6 transition-all duration-700"
+                style={{ opacity: show ? 1 : 0, transform: show ? "none" : "translateX(-20px)", transitionDelay: `${220 + i * 120}ms` }}>
+                <div className="w-14 h-14 rounded-sm bg-gray-800 flex items-center justify-center flex-shrink-0">
+                  <Icon name={s.icon} size={22} className="text-gray-300" />
+                </div>
+                <div>
+                  <p className="font-cormorant text-5xl font-light text-white leading-none">{s.value}</p>
+                  <p className="text-gray-400 text-sm mt-1">{s.label}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* right: achievements */}
+          <div className="flex flex-col gap-4">
+            <p className="text-xs uppercase tracking-widest text-gray-500 mb-2 transition-all duration-500"
+              style={{ opacity: show ? 1 : 0, transitionDelay: "220ms" }}>Достижения</p>
+            {achievements.map((a, i) => (
+              <div key={a.title}
+                className="flex items-start gap-4 p-5 border border-gray-800 rounded-sm hover:border-gray-600 transition-all duration-700"
+                style={{ opacity: show ? 1 : 0, transform: show ? "none" : "translateX(20px)", transitionDelay: `${300 + i * 120}ms` }}>
+                <div className="w-9 h-9 rounded-sm bg-gray-800 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Icon name={a.icon} size={16} className="text-gray-300" />
+                </div>
+                <div>
+                  <p className="text-white font-medium text-sm leading-snug">{a.title}</p>
+                  <span className="inline-block mt-2 text-xs text-gray-500 bg-gray-800 px-2 py-0.5 rounded-sm">{a.tag}</span>
+                </div>
+              </div>
+            ))}
+
+            {/* quote */}
+            <p className="font-cormorant text-xl italic text-gray-500 mt-4 transition-all duration-700"
+              style={{ opacity: show ? 1 : 0, transitionDelay: "680ms" }}>
+              «Дисциплина в спорте — фундамент дисциплины в карьере»
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Slide6({ active }: { active: boolean }) {
   const show = useAnimIn(active);
   return (
@@ -487,9 +559,9 @@ function Slide6({ active }: { active: boolean }) {
 
 // ─── main ────────────────────────────────────────────────────────────────────
 
-const slideComponents = [Slide0, Slide1, Slide2, Slide3, Slide4, Slide5, Slide6];
-const slideLabels = ["Титул", "Цель", "Карьера", "Доход", "Навыки", "Жизнь", "Итог"];
-const slideBg = ["white", "dark", "white", "light", "white", "dark", "white"];
+const slideComponents = [Slide0, Slide1, Slide2, Slide3, Slide4, Slide5, Slide6Sport, Slide6];
+const slideLabels = ["Титул", "Цель", "Карьера", "Доход", "Навыки", "Жизнь", "Спорт", "Итог"];
+const slideBg = ["white", "dark", "white", "light", "white", "dark", "dark", "white"];
 
 export default function Index() {
   const [current, setCurrent] = useState(0);
